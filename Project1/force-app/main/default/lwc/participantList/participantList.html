@@ -1,0 +1,13 @@
+<template>
+  <lightning-card title="Participants for this Training" icon-name="utility:people">
+    <div class="slds-p-around_small">
+      <lightning-datatable
+        key-field="Id"
+        data={participants}
+        columns={columns}
+        hide-checkbox-column
+      >
+      </lightning-datatable>
+    </div>
+  </lightning-card>
+</template>
