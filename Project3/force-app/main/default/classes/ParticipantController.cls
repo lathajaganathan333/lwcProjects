@@ -1,17 +1,14 @@
 public with sharing class ParticipantController {
   @AuraEnabled
-  public static List<Participant__c> getParticipants(
-    String training,
-    String searchText
-  ) {
+  public static List<Participant__c> getParticipants(String training) {
     if (training == null) {
       return new List<Participant__c>();
     }
-    String key = '%' + (String.isBlank(searchText) ? '' : searchText) + '%';
+
     return [
       SELECT Id, Name, Email__c, GPA__c, Status__c, Passed__c
       FROM Participant__c
-      WHERE Training__c = :training AND (Name LIKE :key OR Email__c LIKE :key)
+      WHERE Training__c = :training
     ];
   }
   @AuraEnabled
@@ -22,7 +19,6 @@ public with sharing class ParticipantController {
     return [
       SELECT Id, Name, Email__c, GPA__c, Status__c, Passed__c
       FROM Participant__c
-      WHERE Id IN :participants
-    ];
+     ];
   }
 }

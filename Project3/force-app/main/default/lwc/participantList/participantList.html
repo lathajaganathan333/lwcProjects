@@ -1,11 +1,9 @@
 <template>
-  <lightning-card>
-    <c-search-filter onsearchevent={handleSearchEvent}></c-search-filter>
-  </lightning-card>
   <lightning-card
     title="Participants for this Training"
     icon-name="utility:people"
   >
+    <c-search-filter onsearchevent={handleSearchEvent}></c-search-filter>
     <template if:true={isLoading}>
       <lightning-spinner
         alternative-text="Loading"
@@ -15,7 +13,7 @@
     <div class="slds-p-around_small">
       <lightning-datatable
         key-field="Id"
-        data={participants}
+        data={searchedParticipants}
         columns={columns}
         onsave={handleSave}
         oncancel={handleCancel}

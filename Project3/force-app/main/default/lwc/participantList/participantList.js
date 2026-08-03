@@ -6,9 +6,13 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 export default class ParticipantList extends LightningElement {
   @api recordId;
   participants = [];
+  searchedParticipants = [];
   draftValues = [];
   isLoading = false;
   searchText = "";
+  connectedCallback() {
+    this.loadParticipants();
+  }
   columns = [
     { label: "Name", fieldName: "Name", type: "text", editable: true },
     { label: "Email", fieldName: "Email__c", type: "email", editable: true },
@@ -18,19 +22,17 @@ export default class ParticipantList extends LightningElement {
   ];
   loadParticipants() {
     this.isLoading = true;
-    getParticipants({ training: this.recordId, searchText: this.searchText })
+    getParticipants({ training: this.recordId })
       .then((result) => {
         this.participants = result;
+        this.searchedParticipants = result;
         this.isLoading = false;
       })
       .catch((error) => {
         console.error(error);
       });
   }
-  connectedCallback() {
-    this.loadParticipants();
-  }
-
+  
   handleSave(event) {
     this.draftValues = event.detail.draftValues;
     this.isLoading = true;
@@ -40,6 +42,7 @@ export default class ParticipantList extends LightningElement {
       .then((result) => {
         this.isLoading = false;
         this.participants = result;
+        this.searchedParticipants = result;
         this.draftValues = [];
         this.showToast("Success!", "Participants saved.", "success");
       })
@@ -63,6 +66,17 @@ export default class ParticipantList extends LightningElement {
   }
   handleSearchEvent(event) {
     this.searchText = event.detail;
-    this.loadParticipants();
+    this.filteredParticipants();
+  }
+  filteredParticipants(){
+    let key = this.searchText.toLowerCase();
+    if(!key){
+      this.searchedParticipants = [...this.participants];
+      return;
+    }
+    this.searchedParticipants=  this.participants.filter(participant=>
+      participant.Name?.toLowerCase().includes(key) ||
+      participant.Email__c?.toLowerCase().includes(key)
+    );
   }
 }
